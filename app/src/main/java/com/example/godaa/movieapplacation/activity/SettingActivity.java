@@ -12,7 +12,7 @@ import com.example.godaa.movieapplacation.R;
 
 
 /**
- * Created by Abdullah on 08/12/2016.
+ * Created by godaa on 08/12/2017.
  */
 public class SettingActivity extends PreferenceActivity
         implements Preference.OnPreferenceChangeListener {

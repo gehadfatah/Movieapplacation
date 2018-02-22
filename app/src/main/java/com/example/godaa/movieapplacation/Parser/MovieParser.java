@@ -17,6 +17,7 @@ import retrofit2.http.Url;
 /**
  * Created by godaa on 03/05/2017.
  */
+//parser using volley library to retrieve data from web service
 public class MovieParser {
     Context context;
     OnExcute onExcute;

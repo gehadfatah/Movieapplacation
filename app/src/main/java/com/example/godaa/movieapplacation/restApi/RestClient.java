@@ -19,6 +19,7 @@ import retrofit2.http.Query;
 /**
  * Created by godaa on 29/04/2017.
  */
+//retrieve data using retrofit
 public class RestClient {
     public static Retrofit getClient(Context context) {
         HttpLoggingInterceptor httpLoggingInterceptor=new HttpLoggingInterceptor();
@@ -44,8 +45,6 @@ public class RestClient {
 
         @GET("3/movie/{id}/reviews")
         Call<ReviewsData> getReviews( @Path("id") String id,@Query("api_key") String api_key);
-
-
 
     }
 

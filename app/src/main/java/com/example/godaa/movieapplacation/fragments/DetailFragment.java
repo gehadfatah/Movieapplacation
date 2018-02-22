@@ -1,7 +1,7 @@
 package com.example.godaa.movieapplacation.fragments;
 
 import android.app.AlertDialog;
-import android.content.Intent;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,15 +13,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.godaa.movieapplacation.BuildConfig;
+import com.example.godaa.movieapplacation.MovieApp;
 import com.example.godaa.movieapplacation.R;
 import com.example.godaa.movieapplacation.adapter.ReviewsAdapter;
 import com.example.godaa.movieapplacation.adapter.TrailorsAdapter;
-import com.example.godaa.movieapplacation.helper.LocalDbHelper;
 import com.example.godaa.movieapplacation.model.Movie;
 import com.example.godaa.movieapplacation.model.Review;
 import com.example.godaa.movieapplacation.model.ReviewsData;
@@ -42,28 +41,30 @@ import retrofit2.Response;
  * Created by godaa on 28/04/2017.
  */
 public class DetailFragment extends Fragment {
-    final  static String TAG=DetailFragment.class.getSimpleName();
+    final static String TAG = DetailFragment.class.getSimpleName();
     Movie movie;
     ReviewsData reviewsData;
-    List<Review> reviewList=new ArrayList<>();
+    List<Review> reviewList = new ArrayList<>();
     LinearLayout footer;
 
     //RelativeLayout Header;
     View Header;
     ListView listViewTrailers;
     TrailersData trailersData;
-    ArrayList<Trailer> trailerList ;
-    LocalDbHelper localDbHelper;
+    ArrayList<Trailer> trailerList;
+    // LocalDbHelper localDbHelper;
     AlertDialog dialog;
     ListView listViewReviews;
 
-    public DetailFragment() {
 
+    public static DetailFragment newInstance(Context context, Movie movie) {
+        DetailFragment detailFragment = new DetailFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(context.getResources().getString(R.string.movie), movie);
+        detailFragment.setArguments(bundle);
+        return detailFragment;
     }
 
-    public DetailFragment(Movie movie) {
-        this.movie=movie;
-    }
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -74,9 +75,9 @@ public class DetailFragment extends Fragment {
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
         if (savedInstanceState != null) {
-            movie = savedInstanceState.getParcelable("movie");
+            //   movie = savedInstanceState.getParcelable("movie");
             //if (movie != null)
-             //   Loadgrid(moviesData.getResults());
+            //   Loadgrid(moviesData.getResults());
         }
     }
 
@@ -85,10 +86,10 @@ public class DetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         dialog = new SpotsDialog(getActivity());
         dialog.show();
-        View view = inflater.inflate(R.layout.detail_fragment, container,false);
-
-         Header = inflater.inflate(R.layout.view_header,listViewTrailers, false);
-        footer = (LinearLayout)getActivity().getLayoutInflater().inflate(R.layout.view_footer,listViewTrailers, false);
+        View view = inflater.inflate(R.layout.detail_fragment, container, false);
+        movie = getArguments().getParcelable(getContext().getResources().getString(R.string.movie));
+        Header = inflater.inflate(R.layout.view_header, listViewTrailers, false);
+        footer = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.view_footer, listViewTrailers, false);
 
         listViewTrailers = (ListView) view.findViewById(R.id.list_detail_view);
 
@@ -100,15 +101,15 @@ public class DetailFragment extends Fragment {
     }
 
     private void loadTAiler(Integer id) {
-         final RestClient.ApiService apiService = RestClient.getClient(getContext()).create(RestClient.ApiService.class);
-        apiService.getTrailers( id.toString(),BuildConfig.API_KEY).enqueue(new Callback<TrailersData>() {
+        final RestClient.ApiService apiService = RestClient.getClient(getContext()).create(RestClient.ApiService.class);
+        apiService.getTrailers(id.toString(), BuildConfig.API_KEY).enqueue(new Callback<TrailersData>() {
             @Override
             public void onResponse(Call<TrailersData> call, Response<TrailersData> response) {
-                trailersData=response.body();
-                trailerList=trailersData.getResults();
+                trailersData = response.body();
+                trailerList = trailersData.getResults();
                 Log.i(TAG, "result is " + trailerList.toString());
                 listViewTrailers.addHeaderView(Header);
-                listViewTrailers.setAdapter(new TrailorsAdapter(getActivity(),trailerList));
+                listViewTrailers.setAdapter(new TrailorsAdapter(getActivity(), trailerList));
             }
 
             @Override
@@ -150,14 +151,14 @@ public class DetailFragment extends Fragment {
 
         listViewReviews = (ListView) footer.findViewById(R.id.list_reviews);
         RestClient.ApiService apiService = RestClient.getClient(getContext()).create(RestClient.ApiService.class);
-        apiService.getReviews(movie.getId().toString(),BuildConfig.API_KEY).enqueue(new Callback<ReviewsData>() {
+        apiService.getReviews(movie.getId().toString(), BuildConfig.API_KEY).enqueue(new Callback<ReviewsData>() {
             @Override
             public void onResponse(Call<ReviewsData> call, Response<ReviewsData> response) {
-                 reviewsData=response.body();
-                reviewList=reviewsData.getResults();
+                reviewsData = response.body();
+                reviewList = reviewsData.getResults();
                 Log.i(TAG, "review list" + reviewList.size());
-                listViewReviews.setAdapter(new ReviewsAdapter(getActivity(),reviewList));
-                if (reviewList.size()>0) {
+                listViewReviews.setAdapter(new ReviewsAdapter(getActivity(), reviewList));
+                if (reviewList.size() > 0) {
                     listViewTrailers.addFooterView(footer);
                 }
             }
@@ -172,7 +173,7 @@ public class DetailFragment extends Fragment {
     }
 
     private void loadHeader() {
-        ImageView imageView = (ImageView)Header.findViewById(R.id.image_detail);
+        ImageView imageView = (ImageView) Header.findViewById(R.id.image_detail);
         TextView year = (TextView) Header.findViewById(R.id.year);
         TextView duration = (TextView) Header.findViewById(R.id.duration);
         TextView rate = (TextView) Header.findViewById(R.id.rate);
@@ -182,10 +183,11 @@ public class DetailFragment extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                localDbHelper=new LocalDbHelper(getActivity().getApplicationContext());
-                LocalDbHelper.set_Favourite(movie,localDbHelper);
-                Toast.makeText(getContext(),"Successfully set this Movie to Favourite",Toast.LENGTH_LONG).show();
-              button.setBackgroundColor(getActivity().getResources().getColor(R.color.fav_bg));
+                //localDbHelper=new LocalDbHelper(getActivity().getApplicationContext());
+                // LocalDbHelper.set_Favourite(movie,localDbHelper);
+                MovieApp.getapphelperdatabase().set_Favourite(movie);
+                Toast.makeText(getContext(), "Successfully set this Movie to Favourite", Toast.LENGTH_LONG).show();
+                button.setBackgroundColor(getActivity().getResources().getColor(R.color.fav_bg));
             }
         });
         String Image_url = getActivity().getResources().getString(R.string.image_url) + movie.getPosterPath();
@@ -194,7 +196,7 @@ public class DetailFragment extends Fragment {
                 .into(imageView);
         year.setText(movie.getReleaseDate().split("-")[0]);
         title.setText(movie.getTitle());
-        rate.setText(movie.getVoteAverage().toString()+" / 10");
+        rate.setText(movie.getVoteAverage().toString() + " / 10");
         description.setText(movie.getOverview());
     }
 }
