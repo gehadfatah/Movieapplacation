@@ -24,7 +24,6 @@
         <activity
             android:name=".activity.SettingActivity"
             android:label="@string/title_activity_settings"
-            android:configChanges="orientation|keyboardHidden|screenSize"
             android:parentActivityName=".activity.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

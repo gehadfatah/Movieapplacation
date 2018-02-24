@@ -3,8 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.godaa.movieapplacation.activity..ItemDetailsActivity">
-
+   >
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -18,14 +17,15 @@
             android:gravity="center_vertical"
             android:background="@color/mainheader">
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Title"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:text="Title kjfj fkjf fkjdkfdkjdkf fjkdfj f j kf"
                 android:gravity="center"
                 android:id="@+id/title_movie"
                 android:textColor="@color/white"
                 android:textSize="@dimen/main_title"
-                android:layout_margin="@dimen/fab_margin"
+                android:layout_marginStart="@dimen/fab_margin"
+                android:layout_marginEnd="@dimen/fab_margin"
                 />
             </LinearLayout>
         <LinearLayout
@@ -52,7 +52,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="8787"
+                    tools:text="8787"
                     android:id="@+id/year"
                     android:textSize="@dimen/year_size"
                     android:textColor="@color/gray"
@@ -60,7 +60,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="894 min"
+                    tools:text="894 min"
                     android:id="@+id/duration"
                     android:textSize="@dimen/min_size"
                     android:textColor="@color/gray"
@@ -68,7 +68,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="7/10"
+                    tools:text="7/10"
+
                     android:id="@+id/rate"
                     android:textSize="@dimen/small_size"
                     android:textColor="@color/black"
@@ -76,7 +77,7 @@
                 <Button
                     android:layout_width="@dimen/width_btn"
                     android:layout_height="@dimen/btn_h"
-                    android:text="Set As  favourite"
+                    tools:text="Set As  favourite"
                     android:textAllCaps="false"
                     android:id="@+id/favourite_btn"
                     android:layout_marginTop="@dimen/fab_margin"
@@ -103,7 +104,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/top_margin"
-            android:text="Trailers:"
+            tools:text="Trailers:"
             android:textSize="@dimen/min_size"
             android:id="@+id/trailer"/>
     </LinearLayout>

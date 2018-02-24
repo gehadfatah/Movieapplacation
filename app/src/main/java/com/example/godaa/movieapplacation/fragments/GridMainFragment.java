@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,9 +43,9 @@ public class GridMainFragment extends Fragment implements OnExcute, Callbackinte
     Callbackinterface mCallbackinterface;
     MoviesData moviesData;
     List<Movie> movies;
-    ProgressDialog progressDialog;
+   // ProgressDialog progressDialog;
     Context context = getContext();
-
+boolean mTwopane;
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -74,32 +75,41 @@ public class GridMainFragment extends Fragment implements OnExcute, Callbackinte
         View view = inflater.inflate(R.layout.recycle_view, container, false);
         recyclerView = (RecyclerView) view.findViewById(R.id.recycle);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(),  numberOfColumns() ));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         // LocalDbHelper localDbHelper = new LocalDbHelper(getContext());
-        progressDialog = new ProgressDialog(getContext());
-
+       // progressDialog = new ProgressDialog(getContext());
+        mTwopane = getContext().getResources().getBoolean(R.bool.mTwoBane);
         getdata(/*localDbHelper*/);
         return view;
 
     }
-
+    private int numberOfColumns() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        // You can change this divider to adjust the size of the poster
+        int widthDivider = 400;
+        int width = displayMetrics.widthPixels;
+        int nColumns = width / widthDivider;
+        if (nColumns < 2) return 2;
+        return nColumns;
+    }
     public void Loadgrid(List<Movie> movies) {
         recyclerView.setAdapter(new GridLayoutAdapter(movies, getActivity(), this));
 
         Log.i("return", "from gridlaoutadapterr");
         //just for first load in two pane
-        if (getActivity().getResources().getBoolean(R.bool.mTwoBane)) {
+        if (mTwopane) {
             mCallbackinterface.OnItemSelcted(movies.get(0));
         }
-        progressDialog.dismiss();
+       // progressDialog.dismiss();
 
 
     }
 
     public void getdata(/*final LocalDbHelper localDbHelper*/) {
         try {
-            progressDialog.show();
+         //   progressDialog.show();
 
         } catch (NullPointerException e) {
             e.getStackTrace();

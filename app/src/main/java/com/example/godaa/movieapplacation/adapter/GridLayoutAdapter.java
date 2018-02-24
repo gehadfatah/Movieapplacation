@@ -49,6 +49,8 @@ public class GridLayoutAdapter extends  RecyclerView.Adapter<GridLayoutAdapter.V
 
         Picasso.with(context)
                 .load(image_url)
+                .placeholder(R.mipmap.ic_launcher)
+                .error(R.mipmap.ic_launcher)
                 .into(holder.imageView);
 
         holder.imageView.setOnClickListener(new View.OnClickListener() {

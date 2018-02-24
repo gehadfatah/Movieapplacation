@@ -65,17 +65,21 @@ public class DetailFragment extends Fragment {
         return detailFragment;
     }
 
+
+
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        // outState.putParcelable("movie",moviedata);
-    }
+        outState.putParcelable(getResources().getString(R.string.movie), movie);
+        //   outState.putParcelable("movie",moviedata);
 
+    }
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
         if (savedInstanceState != null) {
-            //   movie = savedInstanceState.getParcelable("movie");
+               movie = savedInstanceState.getParcelable(getResources().getString(R.string.movie));
             //if (movie != null)
             //   Loadgrid(moviesData.getResults());
         }
@@ -193,6 +197,8 @@ public class DetailFragment extends Fragment {
         String Image_url = getActivity().getResources().getString(R.string.image_url) + movie.getPosterPath();
         Picasso.with(getContext())
                 .load(Image_url)
+                .placeholder(R.mipmap.ic_launcher)
+                .error(R.mipmap.ic_launcher)
                 .into(imageView);
         year.setText(movie.getReleaseDate().split("-")[0]);
         title.setText(movie.getTitle());

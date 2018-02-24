@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,8 +33,21 @@ public class MainActivity extends AppCompatActivity implements Callbackinterface
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         // do nothing, just override
+
     }
 
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        movie=savedInstanceState.getParcelable(getResources().getString(R.string.movie));
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(getResources().getString(R.string.movie), movie);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +102,11 @@ public class MainActivity extends AppCompatActivity implements Callbackinterface
             back.setVisibility(View.VISIBLE);
         }
 
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 
     private void loadMainFragment() {
