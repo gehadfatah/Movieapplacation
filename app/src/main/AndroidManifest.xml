@@ -30,6 +30,10 @@
                 android:value=".activity.MainActivity" />
 
         </activity>
+        <provider
+            android:name=".helper.MoviesContentProvider"
+            android:authorities="com.example.godaa.movieapplacation"
+            android:exported="false"/>
     </application>
 
 </manifest>

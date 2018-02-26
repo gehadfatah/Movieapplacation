@@ -11,6 +11,7 @@
     <string name="rate">6.1/10</string>
     <string name="duration">120min</string>
     <string name="favourit">Mark as Favourite</string>
+    <string name="unfavourit">Mark as unFavourite</string>
     <string name="youtube">https://www.youtube.com/watch?v=</string>
 
     <!--preference Structure Activity-->
