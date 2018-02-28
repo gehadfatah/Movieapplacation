@@ -1,0 +1,46 @@
+<resources>
+    <string name="app_name">Movie</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="image_url">http://image.tmdb.org/t/p/w500</string>
+    <string name="image_url2">http://image.tmdb.org/t/p/w780</string>
+    <string name="main_url">https://api.themoviedb.org/</string>
+    <string name="movie">Selected Movie</string>
+    <string name="movieDetails">Movie Details</string>
+    <string name="movies">Movies</string>
+    <string name="favourit">Mark as Favourite</string>
+    <string name="unfavourit">Mark as unFavourite</string>
+    <string name="year">2015</string>
+    <string name="rate">6.1/10</string>
+    <string name="duration">120min</string>
+
+
+
+    <!-- Strings related to Settings -->
+
+    <!-- Example General settings -->
+    <!--preference Structure Activity-->
+    <string name="unit">Select Category </string>
+    <string name="pref_unit_key" translatable="false">category</string>
+    //entries values
+    <string name="pref_units_popular">popular</string>
+    <string name="pref_units_top_rated">top_rated</string>
+    <string name="pref_units_favourited">favourite</string>
+//this called entries =whats is show
+    <string name="pref_unit_label_favourited">Favourite</string>
+    <string name="pref_unit_label_popular">Popular</string>
+    <string name="pref_unit_label_top_rated">Top Rated</string>
+    <string name="youtube">https://www.youtube.com/watch?v=</string>
+
+    <string-array name="pref_units_values">
+        <item>@string/pref_units_popular</item>
+        <item>@string/pref_units_top_rated</item>
+        <item>@string/pref_units_favourited</item>
+    </string-array>
+
+    <string-array name="pref_units_options">
+        <item>@string/pref_unit_label_popular</item>
+        <item>@string/pref_unit_label_top_rated</item>
+        <item>@string/pref_unit_label_favourited</item>
+    </string-array>
+</resources>
