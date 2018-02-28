@@ -23,6 +23,7 @@ public class favService extends IntentService {
     static List<Movie> movies;
     public static ServiceCalback servicecallback;
     static Context context;
+
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
      *
@@ -34,11 +35,9 @@ public class favService extends IntentService {
     }
 
 
+    public void loadFavouriteMovies() {
 
-
-    public  void loadFavouriteMovies() {
-
-        Cursor cursor =this.getContentResolver().query(Dbcotract.TableInfo.CONTENT_URI,
+        Cursor cursor = this.getContentResolver().query(Dbcotract.TableInfo.CONTENT_URI,
                 null, Dbcotract.TableInfo.Favourite + "=?", new String[]{"1"}, null);
         if (cursor.moveToFirst()) {
             movies = new ArrayList<>();
@@ -66,14 +65,10 @@ public class favService extends IntentService {
 
         }
     }
+
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-            //  }else {
-            loadFavouriteMovies();
-
-            //  }
-
-        //loadFavouriteMovies();
+        loadFavouriteMovies();
         context = this;
 
     }

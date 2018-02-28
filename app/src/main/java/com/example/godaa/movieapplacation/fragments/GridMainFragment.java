@@ -48,15 +48,12 @@ import retrofit2.Response;
  * Created by godaa on 28/04/2017.
  */
 public class GridMainFragment extends Fragment implements Callbackinterface, ServiceCalback {
-    //String TaG=get
     RecyclerView recyclerView;
     Callbackinterface mCallbackinterface;
     MoviesData moviesData;
     ArrayList<Movie> movies;
     ProgressDialog progressDialog;
-    Context context = getContext();
     boolean mTwopane;
-    //Cursor cursor = null;
 
     @Override
     public void onAttach(Context context) {
@@ -85,14 +82,13 @@ public class GridMainFragment extends Fragment implements Callbackinterface, Ser
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.recycle_view, container, false);
-        recyclerView = (RecyclerView) view.findViewById(R.id.recycle);
+        recyclerView = view.findViewById(R.id.recycle);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), numberOfColumns()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        // LocalDbHelper localDbHelper = new LocalDbHelper(getContext());
         progressDialog = new ProgressDialog(getContext());
         mTwopane = getContext().getResources().getBoolean(R.bool.mTwoBane);
-        getdata(/*localDbHelper*/);
+        getdata();
         return view;
 
     }
@@ -135,10 +131,6 @@ public class GridMainFragment extends Fragment implements Callbackinterface, Ser
                 public void onResponse(Call<MoviesData> call, Response<MoviesData> response) {
                     moviesData = response.body();
                     movies = (ArrayList<Movie>) moviesData.getResults();
-                    // Log.i("gridfragment",response.body().toString());
-                    // movies=response.body().getResults();
-                    // LocalDbHelper.insertTodatabase(movies, localDbHelper);
-                    // MovieApp.getapphelperdatabase().insertTodatabase(movies);
 
                     Log.i("return ", "from database");
                     Loadgrid(movies);
@@ -146,34 +138,26 @@ public class GridMainFragment extends Fragment implements Callbackinterface, Ser
                         // insertTodatabase(movies);
                         startServiceMovie();
                     }
-
-               /*     if (progressDialog != null)
-                        progressDialog.dismiss();*/
-
                 }
 
                 @Override
                 public void onFailure(Call<MoviesData> call, Throwable t) {
                     Log.e("Gridmainfragmrent  ", t.getMessage());
-                 /*   if (progressDialog != null)
-                        progressDialog.dismiss();*/
 
                 }
             });
 
         } else {
-            //loadFavouriteMovies(localDbHelper);
             loadFavouriteMovies();
-            // Intent intent = new Intent(getContext(), favService.class);
-            //getActivity().startService(intent);
-            //  Loadgrid(moviesfav);
-            // movieService.loadFavouriteMovies();
+            // startServiceMovie();
+
         }
     }
 
     private void startServiceMovie() {
         Intent intent = new Intent(getContext(), MovieService.class);
         intent.putParcelableArrayListExtra("movies", movies);
+        // intent.putExtra("dd", GridMainFragment.this);
         getActivity().startService(intent);
     }
 
@@ -188,11 +172,7 @@ public class GridMainFragment extends Fragment implements Callbackinterface, Ser
                     Movie movie = moviesDatas.get(i);
                     Cursor cursor = getActivity().getContentResolver().query(Dbcotract.TableInfo.CONTENT_URI,
                             new String[]{Dbcotract.TableInfo.Id}, Dbcotract.TableInfo.Id + "=?", new String[]{moviesDatas.get(i).getId().toString()}, Dbcotract.TableInfo.Id);
-                    // Cursor cursor = moviesDBHelper.get_if_exist(moviesDBHelper, movieDetailData.get(i).getId());
-                   /* Cursor cursor = getActivity().getContentResolver().query(Uri.withAppendedPath(
-                            Dbcotract.TableInfo.CONTENT_URI, String.valueOf(movie.getId())),
-                            null, null *//*MoviesContract.MoviesEntry.Id + " LIKE ?"*//**//*+movieDetailData.getId()*//*, new String[]{moviesDatas.get(i).getId().toString()}, Dbcotract.TableInfo.Id);
-*/
+
                     if (cursor == null || cursor.getCount() <= 0) {
                         ContentValues contentValues = new ContentValues();
                         contentValues.put(Dbcotract.TableInfo.Id, movie.getId());
@@ -211,8 +191,6 @@ public class GridMainFragment extends Fragment implements Callbackinterface, Ser
                         if (uri != null) {
                             Log.d("insert uri:", "" + uri.toString());
                         }
-
-
                     }
                     i++;
                     if (cursor != null)
@@ -267,12 +245,6 @@ public class GridMainFragment extends Fragment implements Callbackinterface, Ser
         handler.postDelayed(runnable, 0);
 
     }
-
-    /*  private void loadFavouriteMovies() {
-        movies = MovieApp.getapphelperdatabase().get_Favorite_movies();
-        Loadgrid(movies);
-
-    }*/
 
 
     @Override

@@ -12,5 +12,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/list_reviews"
         android:dividerHeight="0dp"
-        android:divider="@null"></ListView>
+        android:divider="@null">
+
+    </ListView>
 </LinearLayout>

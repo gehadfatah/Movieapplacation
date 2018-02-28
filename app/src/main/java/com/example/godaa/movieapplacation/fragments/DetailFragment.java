@@ -8,11 +8,16 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -22,8 +27,10 @@ import android.widget.Toast;
 import com.example.godaa.movieapplacation.BuildConfig;
 import com.example.godaa.movieapplacation.MovieApp;
 import com.example.godaa.movieapplacation.R;
+import com.example.godaa.movieapplacation.adapter.GridLayoutAdapter;
 import com.example.godaa.movieapplacation.adapter.ReviewsAdapter;
 import com.example.godaa.movieapplacation.adapter.TrailorsAdapter;
+import com.example.godaa.movieapplacation.adapter.TrailorsRAdapter;
 import com.example.godaa.movieapplacation.helper.Dbcotract;
 import com.example.godaa.movieapplacation.model.Movie;
 import com.example.godaa.movieapplacation.model.Review;
@@ -50,20 +57,20 @@ public class DetailFragment extends Fragment {
     ReviewsData reviewsData;
     List<Review> reviewList = new ArrayList<>();
     LinearLayout footer;
-
-    //RelativeLayout Header;
     View Header;
-    ListView listViewTrailers;
+    // ListView listViewTrailers;
+    RecyclerView listViewTrailers;
     TrailersData trailersData;
     ArrayList<Trailer> trailerList;
-    // LocalDbHelper localDbHelper;
     AlertDialog dialog;
     ListView listViewReviews;
     Context context;
     String favourite;
     String unfav;
     String fav = "0";
-
+    LinearLayout linearLayout;
+    FrameLayout footerLayout;
+    FrameLayout HeaderLayout;
     public static DetailFragment newInstance(Context context, Movie movie) {
         DetailFragment detailFragment = new DetailFragment();
         Bundle bundle = new Bundle();
@@ -76,7 +83,7 @@ public class DetailFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-          this.context = context;
+        this.context = context;
     }
 
     @Override
@@ -89,8 +96,6 @@ public class DetailFragment extends Fragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(getResources().getString(R.string.movie), movie);
-        //   outState.putParcelable("movie",moviedata);
-
     }
 
     @Override
@@ -107,14 +112,18 @@ public class DetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         dialog = new SpotsDialog(getActivity());
         dialog.show();
+
         View view = inflater.inflate(R.layout.detail_fragment, container, false);
         movie = getArguments().getParcelable(getContext().getResources().getString(R.string.movie));
-        Header = inflater.inflate(R.layout.view_header, listViewTrailers, false);
-        footer = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.view_footer, listViewTrailers, false);
+       // Header = inflater.inflate(R.layout.view_header, listViewTrailers, false);
+       // footer = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.view_footer, listViewTrailers, false);
+        footerLayout=view.findViewById(R.id.footerlayout);;
+        HeaderLayout=view.findViewById(R.id.headerlayout);;
+
         favourite = getActivity().getResources().getString(R.string.favourit);
         unfav = getActivity().getResources().getString(R.string.unfavourit);
-        listViewTrailers = (ListView) view.findViewById(R.id.list_detail_view);
-
+        listViewTrailers = view.findViewById(R.id.list_detail_view);
+        linearLayout=view.findViewById(R.id.layout_detail);
         loadHeader();
         loadTAiler(movie.getId());
         loadfooter();
@@ -130,8 +139,15 @@ public class DetailFragment extends Fragment {
                 trailersData = response.body();
                 trailerList = trailersData.getResults();
                 Log.i(TAG, "result is " + trailerList.toString());
-                listViewTrailers.addHeaderView(Header);
-                listViewTrailers.setAdapter(new TrailorsAdapter(getActivity(), trailerList));
+                //linearLayout.addView();
+                listViewTrailers.setHasFixedSize(true);
+                listViewTrailers.setLayoutManager( new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+                listViewTrailers.setItemAnimator(new DefaultItemAnimator());
+                listViewTrailers.setAdapter(new TrailorsRAdapter(getActivity(), trailerList));
+                HeaderLayout.addView(Header);
+
+                // listViewTrailers.addHeaderView(Header);
+               // listViewTrailers.setAdapter(new TrailorsAdapter(getActivity(), trailerList));
             }
 
             @Override
@@ -139,34 +155,6 @@ public class DetailFragment extends Fragment {
                 Log.e(TAG, t.getMessage());
             }
         });
-        /*String url = getActivity().getResources().getString(R.string.main_url) +
-                "3/movie/"+movie.getId() + "/videos?api_key="  + BuildConfig.API_KEY;
-        Log.i(TAG, url);
-        MovieParser movieParser=new MovieParser(new OnExcute() {
-            @Override
-            public void Onsuccess(Object o) {
-                JSONObject jsonObject = (JSONObject) o;
-                JSONArray jsonArray;
-                Gson gson=new Gson();
-                Type type=new TypeToken<ArrayList<Trailer>>(){}.getType();
-
-                try {
-                    jsonArray = jsonObject.getJSONArray("results");
-                    trailerList = gson.fromJson(jsonArray.toString(),  type);
-                 //   Log.i(TAG,"odof "+ trailerList.toString());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                listViewTrailers.setAdapter(new TrailorsAdapter(getActivity(),trailerList));
-                listViewTrailers.addHeaderView(Header);
-            }
-
-            @Override
-            public void Onerror(VolleyError volleyError) {
-
-            }
-        }, getActivity());
-        movieParser.getData(url);*/
     }
 
     private void loadfooter() {
@@ -181,7 +169,9 @@ public class DetailFragment extends Fragment {
                 Log.i(TAG, "review list" + reviewList.size());
                 listViewReviews.setAdapter(new ReviewsAdapter(getActivity(), reviewList));
                 if (reviewList.size() > 0) {
-                    listViewTrailers.addFooterView(footer);
+                    //listViewTrailers.addFooterView(footer);
+                    //linearLayout.addView(footer);
+                    footerLayout.addView(footer);
                 }
             }
 
@@ -196,17 +186,17 @@ public class DetailFragment extends Fragment {
 
 
     private void loadHeader() {
-        ImageView imageView = (ImageView) Header.findViewById(R.id.image_detail);
-        TextView year = (TextView) Header.findViewById(R.id.year);
-        TextView duration = (TextView) Header.findViewById(R.id.duration);
+        ImageView imageView = Header.findViewById(R.id.image_detail);
+        TextView year = Header.findViewById(R.id.year);
+        TextView duration = Header.findViewById(R.id.duration);
         TextView rate = (TextView) Header.findViewById(R.id.rate);
-        TextView description = (TextView) Header.findViewById(R.id.description);
-        TextView title = (TextView) Header.findViewById(R.id.title_movie);
-        final Button button = (Button) Header.findViewById(R.id.favourite_btn);
+        TextView description = Header.findViewById(R.id.description);
+        TextView title = Header.findViewById(R.id.title_movie);
+        final Button button = Header.findViewById(R.id.favourite_btn);
         final String[] id = new String[]{movie.getId().toString()};
         Cursor cursor = getActivity().getContentResolver().query(Uri.withAppendedPath(
                 Dbcotract.TableInfo.CONTENT_URI, String.valueOf(movie.getId())),
-                null, null /*MoviesContract.MoviesEntry.Id + " LIKE ?"*//*+movieDetailData.getId()*/, id, Dbcotract.TableInfo.Id);
+                null, null, id, Dbcotract.TableInfo.Id);
         int c = cursor.getCount();
         cursor.moveToFirst();
         do {
@@ -223,9 +213,6 @@ public class DetailFragment extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //localDbHelper=new LocalDbHelper(getActivity().getApplicationContext());
-                // LocalDbHelper.set_Favourite(movie,localDbHelper);
-                //MovieApp.getapphelperdatabase().set_Favourite(movie);
                 if (fav.equals("0")) {
                     fav = "1";
                     Toast.makeText(getContext(), "Successfully set this Movie to Favourite", Toast.LENGTH_LONG).show();
@@ -241,7 +228,7 @@ public class DetailFragment extends Fragment {
                     button.setBackground(getActivity().getResources().getDrawable(R.drawable.unfav_btn_border));
 
                 }
-                       }
+            }
         });
         String Image_url = getActivity().getResources().getString(R.string.image_url) + movie.getPosterPath();
         Picasso.with(getContext())

@@ -4,74 +4,58 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.godaa.movieapplacation.Interface.Callbackinterface;
 import com.example.godaa.movieapplacation.R;
+import com.example.godaa.movieapplacation.model.Movie;
 import com.example.godaa.movieapplacation.model.Trailer;
-import com.example.godaa.movieapplacation.model.TrailersData;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import it.sephiroth.android.library.picasso.Picasso;
 
 /**
- * Created by godaa on 30/04/2017.
+ * Created by Pc1 on 28/02/2018.
  */
-public class TrailorsAdapter extends BaseAdapter {
+
+public class TrailorsRAdapter extends  RecyclerView.Adapter<TrailorsRAdapter.ViewHolder> {
     ArrayList<Trailer> trailersData;
-    ViewHoldertrailer viewHoldertrailer;
     Context context;
-    View view;
 
-    public TrailorsAdapter() {
-        super();
-    }
-
-    public TrailorsAdapter(Context context, ArrayList<Trailer> trailersData) {
+    public TrailorsRAdapter(Context context, ArrayList<Trailer> trailersData) {
         Log.i("TrailorsAdapter  is", trailersData.toString());
         this.trailersData = trailersData;
         this.context = context;
     }
 
-    @Override
-    public int getCount() {
-        return trailersData.size();
-    }
 
-    @Override
-    public Object getItem(int position) {
-        return trailersData.get(position);
-    }
 
     @Override
     public long getItemId(int position) {
         return position;
     }
 
-    @Override
-    public View getView(int position, View convertView, final ViewGroup parent) {
-        view = convertView;
 
-        if (view == null) {
-            view = LayoutInflater.from(context).inflate(R.layout.list_trailer_item, parent, false);
-            viewHoldertrailer = new ViewHoldertrailer(view);
-            view.setTag(viewHoldertrailer);
-        } else {
-            viewHoldertrailer = (ViewHoldertrailer) view.getTag();
-        }
+    @Override
+    public TrailorsRAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.list_trailer_item, parent, false);
+
+        return (new TrailorsRAdapter.ViewHolder(view));
+    }
+
+    @Override
+    public void onBindViewHolder(TrailorsRAdapter.ViewHolder holder, int position) {
+
         final Trailer trailer = trailersData.get(position);
 
         String videoId;
@@ -85,12 +69,12 @@ public class TrailorsAdapter extends BaseAdapter {
             Picasso.with(context)
                     .load(img_url)
                     .placeholder(R.mipmap.ic_launcher)
-                    .into(viewHoldertrailer.filmImage);
+                    .into(holder.filmImage);
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        view.setOnClickListener(new View.OnClickListener() {
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
@@ -98,16 +82,15 @@ public class TrailorsAdapter extends BaseAdapter {
                             + trailer.getKey();
                     Intent intent = new Intent(Intent.ACTION_VIEW);
                     intent.setData(Uri.parse(url));
-                    parent.getContext().startActivity(intent);
+                   context.startActivity(intent);
                 } catch (ActivityNotFoundException e) {
                     Toast.makeText(context, "No application can handle this request.", Toast.LENGTH_LONG).show();
                     e.printStackTrace();
                 }
             }
         });
-        return view;
-    }
 
+    }
     public String extractYoutubeId(String url) throws MalformedURLException {
         String query = new URL(url).getQuery();
         String[] param = query.split("&");
@@ -120,13 +103,16 @@ public class TrailorsAdapter extends BaseAdapter {
         }
         return id;
     }
+    @Override
+    public int getItemCount() {
+        return 0;
+    }
 
-
-    private class ViewHoldertrailer {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView filmImage;
 
-        public ViewHoldertrailer(View view) {
-            super();
+        public ViewHolder(View view) {
+            super(view);
             filmImage = view.findViewById(R.id.img_thumnail);
 
         }
