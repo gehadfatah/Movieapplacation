@@ -45,7 +45,10 @@ public class TrailorsRAdapter extends  RecyclerView.Adapter<TrailorsRAdapter.Vie
         return position;
     }
 
-
+    @Override
+    public int getItemCount() {
+        return trailersData.size();
+    }
     @Override
     public TrailorsRAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.list_trailer_item, parent, false);
@@ -102,10 +105,6 @@ public class TrailorsRAdapter extends  RecyclerView.Adapter<TrailorsRAdapter.Vie
             }
         }
         return id;
-    }
-    @Override
-    public int getItemCount() {
-        return 0;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

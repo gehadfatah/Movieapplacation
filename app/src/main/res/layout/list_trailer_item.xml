@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
 
+<!--
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:orientation="horizontal">-->
 <!--
         <ImageView
             android:layout_width="wrap_content"
@@ -25,14 +21,13 @@
             android:gravity="center|left"
             tools:text="jfkjdf fkdjf df k fdjf d f
 fd fd fdfkdf d fd fd fd fd" />-->
-        <RelativeLayout
-            android:id="@+id/webvideo_layout2"
-            android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="10dp"
-            >
+<RelativeLayout android:id="@+id/webvideo_layout2"
+    android:layout_width="150dp"
+    android:layout_height="100dp"
+    android:layout_margin="10dp"
+    android:layout_gravity="center"
+
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
 
             <ImageView
@@ -50,7 +45,6 @@ fd fd fdfkdf d fd fd fd fd" />-->
                 android:src="@drawable/ic_play_circle_outline_black_24dp" />
         </RelativeLayout>
 
-    </LinearLayout>
 
    <!-- <LinearLayout
         android:layout_width="match_parent"
@@ -60,4 +54,5 @@ fd fd fdfkdf d fd fd fd fd" />-->
         android:background="@color/black">
 
     </LinearLayout>-->
-</LinearLayout>
+<!--
+</LinearLayout>-->

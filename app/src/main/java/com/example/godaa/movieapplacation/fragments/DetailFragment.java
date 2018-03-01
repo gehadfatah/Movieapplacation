@@ -71,6 +71,7 @@ public class DetailFragment extends Fragment {
     LinearLayout linearLayout;
     FrameLayout footerLayout;
     FrameLayout HeaderLayout;
+
     public static DetailFragment newInstance(Context context, Movie movie) {
         DetailFragment detailFragment = new DetailFragment();
         Bundle bundle = new Bundle();
@@ -115,15 +116,18 @@ public class DetailFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.detail_fragment, container, false);
         movie = getArguments().getParcelable(getContext().getResources().getString(R.string.movie));
-       // Header = inflater.inflate(R.layout.view_header, listViewTrailers, false);
-       // footer = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.view_footer, listViewTrailers, false);
-        footerLayout=view.findViewById(R.id.footerlayout);;
-        HeaderLayout=view.findViewById(R.id.headerlayout);;
+        footerLayout = view.findViewById(R.id.footerlayout);
+
+        HeaderLayout = view.findViewById(R.id.headerlayout);
+
+        Header = inflater.inflate(R.layout.view_header, HeaderLayout, false);
+        footer = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.view_footer, footerLayout, false);
+
 
         favourite = getActivity().getResources().getString(R.string.favourit);
         unfav = getActivity().getResources().getString(R.string.unfavourit);
         listViewTrailers = view.findViewById(R.id.list_detail_view);
-        linearLayout=view.findViewById(R.id.layout_detail);
+        linearLayout = view.findViewById(R.id.layout_detail);
         loadHeader();
         loadTAiler(movie.getId());
         loadfooter();
@@ -141,13 +145,13 @@ public class DetailFragment extends Fragment {
                 Log.i(TAG, "result is " + trailerList.toString());
                 //linearLayout.addView();
                 listViewTrailers.setHasFixedSize(true);
-                listViewTrailers.setLayoutManager( new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+                listViewTrailers.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
                 listViewTrailers.setItemAnimator(new DefaultItemAnimator());
                 listViewTrailers.setAdapter(new TrailorsRAdapter(getActivity(), trailerList));
                 HeaderLayout.addView(Header);
 
                 // listViewTrailers.addHeaderView(Header);
-               // listViewTrailers.setAdapter(new TrailorsAdapter(getActivity(), trailerList));
+                // listViewTrailers.setAdapter(new TrailorsAdapter(getActivity(), trailerList));
             }
 
             @Override
@@ -183,7 +187,6 @@ public class DetailFragment extends Fragment {
 
 
     }
-
 
     private void loadHeader() {
         ImageView imageView = Header.findViewById(R.id.image_detail);

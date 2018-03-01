@@ -67,7 +67,7 @@ public class ReviewsAdapter extends BaseAdapter {
         String urll = reviewsData.get(position).getUrl();
         final SpannableString content = new SpannableString(urll);
         content.setSpan(new UnderlineSpan(), 0, urll.length(), 0);
-        viewHolderReviews.url.setText(content);
+        viewHolderReviews.url.setText(" Link Review : "+content);
         //viewHolderReviews.url.setText(review.getUrl());
         viewHolderReviews.url.setOnClickListener(new View.OnClickListener() {
             @Override

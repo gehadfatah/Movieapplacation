@@ -103,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements Callbackinterface
             getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment,
                     DetailFragment.newInstance(this, movie)).commit();
             title.setText(this.getResources().getString(R.string.movieDetails));
+            title.setMaxLines(1);
             back.setVisibility(View.VISIBLE);
         }
 
