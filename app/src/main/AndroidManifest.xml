@@ -34,8 +34,6 @@
             android:name=".helper.MoviesContentProvider"
             android:authorities="com.example.godaa.movieapplacation"
             android:exported="false"/>
-        <service android:name=".helper.MovieService" />
-        <service android:name=".helper.favService" />
     </application>
 
 </manifest>

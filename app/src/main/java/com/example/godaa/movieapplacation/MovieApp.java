@@ -44,3 +44,4 @@ public class MovieApp extends Application {
         return mapphelperdatabase;
     }
 }
+
