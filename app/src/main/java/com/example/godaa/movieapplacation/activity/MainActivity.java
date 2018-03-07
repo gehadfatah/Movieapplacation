@@ -1,17 +1,14 @@
 package com.example.godaa.movieapplacation.activity;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,14 +24,17 @@ import com.example.godaa.movieapplacation.R;
 import com.example.godaa.movieapplacation.fragments.DetailFragment;
 import com.example.godaa.movieapplacation.fragments.GridMainFragment;
 import com.example.godaa.movieapplacation.model.Movie;
+import com.example.godaa.movieapplacation.model.MoviesData;
 
 public class MainActivity extends AppCompatActivity implements Callbackinterface {
     ImageView back;
     TextView title;
+    Fragment mcurrentFragment=null;
     // Callbackinterface callbackinterface;
     private Movie movie;
     boolean mainOrDetailFragment = true;
-
+    MoviesData moviesData = null;
+    int currentFragment;
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -47,13 +47,33 @@ public class MainActivity extends AppCompatActivity implements Callbackinterface
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         movie = savedInstanceState.getParcelable(getResources().getString(R.string.movie));
+        moviesData = savedInstanceState.getParcelable(getResources().getString(R.string.movies));
+       // currentFragment = savedInstanceState.getInt("currentFragment");
+       // mcurrentFragment = getSupportFragmentManager().getFragment(savedInstanceState,"myfragment");
 
+      /*  if (currentFragment == 0) {
+            loadMainFragment();
+        }else {
+            loadDetailFragment(movie);
+        }*/
+      /*  if (mcurrentFragment instanceof GridMainFragment) {
+            loadMainFragment();
+        } else if (mcurrentFragment instanceof DetailFragment) {
+            loadDetailFragment(movie);
+
+        }*/
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+
         outState.putParcelable(getResources().getString(R.string.movie), movie);
+       // getSupportFragmentManager().putFragment(outState,"myfragment",mcurrentFragment);
+
+        outState.putParcelable(getResources().getString(R.string.movies), moviesData);
+     //   outState.putInt("currentFragment",mainOrDetailFragment?0:1);
+
     }
 
     @Override
@@ -66,8 +86,11 @@ public class MainActivity extends AppCompatActivity implements Callbackinterface
         back = (ImageView) findViewById(R.id.back_image);
         title = (TextView) findViewById(R.id.title_acct);
 
+      //  Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        if (savedInstanceState == null) {
 
-        loadMainFragment();
+            loadMainFragment();
+        }
 
 
         back.setOnClickListener(new View.OnClickListener() {
@@ -78,6 +101,13 @@ public class MainActivity extends AppCompatActivity implements Callbackinterface
         });
 
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (GridMainFragment.moviesData != null)
+            moviesData = GridMainFragment.moviesData;
     }
 
     @Override
@@ -95,16 +125,21 @@ public class MainActivity extends AppCompatActivity implements Callbackinterface
     void loadDetailFragment(Movie movie) {
         mainOrDetailFragment = false;
         boolean mTwoBane = getResources().getBoolean(R.bool.mTwoBane);
+        Fragment fragment = mcurrentFragment == null ? DetailFragment.newInstance(this, movie) : mcurrentFragment;
         if (mTwoBane) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.detail_fragment,
-                    DetailFragment.newInstance(this, movie)).commit();
+           getSupportFragmentManager().beginTransaction().replace(R.id.detail_fragment,
+                   fragment).commit();
+            mcurrentFragment = getSupportFragmentManager().findFragmentById(R.id.detail_fragment);
+
 
         } else {
             getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment,
-                    DetailFragment.newInstance(this, movie)).commit();
+                    fragment).commit();
             title.setText(this.getResources().getString(R.string.movieDetails));
             title.setMaxLines(1);
             back.setVisibility(View.VISIBLE);
+            mcurrentFragment = getSupportFragmentManager().findFragmentById(R.id.main_fragment);
+
         }
 
     }
@@ -113,15 +148,39 @@ public class MainActivity extends AppCompatActivity implements Callbackinterface
     protected void onStop() {
         super.onStop();
     }
-
+    SharedPreferences sharedPreferences;
+    String selected_category;
+    String current_category="popular";
     private void loadMainFragment() {
+
         mainOrDetailFragment = true;
         back.setVisibility(View.GONE);
         title.setText(this.getResources().getString(R.string.movies));
-        getSupportFragmentManager().beginTransaction().addToBackStack("jdk").replace(R.id.main_fragment
-                , new GridMainFragment()).commit();
+      //  Fragment fragment = mcurrentFragment == null ? DetailFragment.newInstance(this, movie) : mcurrentFragment;
+
+       // if (mcurrentFragment != null) {
+        /*    getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment
+                    ,mcurrentFragment).commit();*/
+       // }else{
+  /*      sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        selected_category = sharedPreferences.getString(getString(R.string.pref_unit_key),
+                getString(R.string.pref_units_popular));*/
+      /*  boolean sameCategory = true;
+        if (selected_category .equals(current_category) ) {
+             sameCategory = true;
+        }else {
+            sameCategory = true;
+
+        }*/
+            getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment
+                    , GridMainFragment.newInstance(getApplicationContext(), moviesData, current_category)).commit();
+
+
+     //   }
+        //mcurrentFragment = getSupportFragmentManager().findFragmentById(R.id.main_fragment);
 
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -140,21 +199,27 @@ public class MainActivity extends AppCompatActivity implements Callbackinterface
                 switch (position) {
 
                     case 0:
-                        editor.putString(getString(R.string.pref_unit_key), getString(R.string.pref_units_popular));
-                        editor.apply();
+                      //  editor.putString(getString(R.string.pref_unit_key), getString(R.string.pref_units_popular));
+                        current_category=getString(R.string.pref_units_popular);
                         loadMainFragment();
+
                         break;
                     case 1:
-                        editor.putString(getString(R.string.pref_unit_key), getString(R.string.pref_units_top_rated));
-                        editor.apply();
+                      //  editor.putString(getString(R.string.pref_unit_key), getString(R.string.pref_units_top_rated));
+                        current_category= getString(R.string.pref_units_top_rated);
                         loadMainFragment();
+
                         break;
                     case 2:
-                        editor.putString(getString(R.string.pref_unit_key), getString(R.string.pref_units_favourited));
-                        editor.apply();
+                      //  editor.putString(getString(R.string.pref_unit_key), getString(R.string.pref_units_favourited));
+                        current_category = getString(R.string.pref_units_favourited);
                         loadMainFragment();
+
                         break;
                 }
+              //  editor.apply();
+
+
             }
 
             @Override

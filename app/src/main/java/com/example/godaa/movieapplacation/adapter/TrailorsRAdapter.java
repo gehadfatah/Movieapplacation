@@ -80,16 +80,15 @@ public class TrailorsRAdapter extends  RecyclerView.Adapter<TrailorsRAdapter.Vie
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
                     String url = context.getResources().getString(R.string.youtube)
                             + trailer.getKey();
                     Intent intent = new Intent(Intent.ACTION_VIEW);
                     intent.setData(Uri.parse(url));
-                   context.startActivity(intent);
-                } catch (ActivityNotFoundException e) {
-                    Toast.makeText(context, "No application can handle this request.", Toast.LENGTH_LONG).show();
-                    e.printStackTrace();
-                }
+                    if (intent.resolveActivity(context.getPackageManager()) != null) {
+                        context.startActivity(intent);
+
+                    }
+
             }
         });
 

@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -25,11 +24,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.godaa.movieapplacation.BuildConfig;
-import com.example.godaa.movieapplacation.MovieApp;
 import com.example.godaa.movieapplacation.R;
-import com.example.godaa.movieapplacation.adapter.GridLayoutAdapter;
 import com.example.godaa.movieapplacation.adapter.ReviewsAdapter;
-import com.example.godaa.movieapplacation.adapter.TrailorsAdapter;
 import com.example.godaa.movieapplacation.adapter.TrailorsRAdapter;
 import com.example.godaa.movieapplacation.helper.Dbcotract;
 import com.example.godaa.movieapplacation.model.Movie;
@@ -117,13 +113,9 @@ public class DetailFragment extends Fragment {
         View view = inflater.inflate(R.layout.detail_fragment, container, false);
         movie = getArguments().getParcelable(getContext().getResources().getString(R.string.movie));
         footerLayout = view.findViewById(R.id.footerlayout);
-
         HeaderLayout = view.findViewById(R.id.headerlayout);
-
         Header = inflater.inflate(R.layout.view_header, HeaderLayout, false);
         footer = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.view_footer, footerLayout, false);
-
-
         favourite = getActivity().getResources().getString(R.string.favourit);
         unfav = getActivity().getResources().getString(R.string.unfavourit);
         listViewTrailers = view.findViewById(R.id.list_detail_view);

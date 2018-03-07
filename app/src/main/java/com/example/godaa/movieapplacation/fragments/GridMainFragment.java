@@ -1,12 +1,10 @@
 package com.example.godaa.movieapplacation.fragments;
 
 import android.app.ProgressDialog;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -21,23 +19,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.android.volley.VolleyError;
 import com.example.godaa.movieapplacation.BuildConfig;
 import com.example.godaa.movieapplacation.Interface.Callbackinterface;
-import com.example.godaa.movieapplacation.Interface.OnExcute;
 import com.example.godaa.movieapplacation.Interface.ServiceCalback;
 import com.example.godaa.movieapplacation.R;
 import com.example.godaa.movieapplacation.activity.MainActivity;
 import com.example.godaa.movieapplacation.adapter.GridLayoutAdapter;
 import com.example.godaa.movieapplacation.helper.Dbcotract;
 import com.example.godaa.movieapplacation.helper.MovieService;
-import com.example.godaa.movieapplacation.helper.favService;
 import com.example.godaa.movieapplacation.model.Movie;
 import com.example.godaa.movieapplacation.model.MoviesData;
 import com.example.godaa.movieapplacation.restApi.RestClient;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import retrofit2.Call;
@@ -50,33 +44,53 @@ import retrofit2.Response;
 public class GridMainFragment extends Fragment implements Callbackinterface, ServiceCalback {
     RecyclerView recyclerView;
     Callbackinterface mCallbackinterface;
-    MoviesData moviesData;
+    public static MoviesData moviesData = null;
     ArrayList<Movie> movies;
     ProgressDialog progressDialog;
     boolean mTwopane;
+    static Context contextApp = null;
+    static String selectedCategory;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         mCallbackinterface = (MainActivity) context;
+    }
 
+    public static GridMainFragment newInstance(Context context, MoviesData moviesData, String SelectedCategory) {
+        GridMainFragment mGridMainFragment = new GridMainFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(context.getResources().getString(R.string.movies), moviesData);
+        //bundle.putString(context.getResources().getString(R.string.selected_category), selected_category);
+        mGridMainFragment.setArguments(bundle);
+        contextApp = context;
+        selectedCategory = SelectedCategory;
+        return mGridMainFragment;
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable("moviesdata", moviesData);
+        // outState.putParcelable(getResources().getString(R.string.movies), moviesData);
     }
 
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        if (savedInstanceState != null) {
-            moviesData = savedInstanceState.getParcelable("moviesData");
-            if (moviesData != null)
-                Loadgrid(moviesData.getResults());
-        }
+     /*   if (savedInstanceState != null && savedInstanceState.getParcelable(getResources().getString(R.string.movies)) != null) {
+            moviesData = savedInstanceState.getParcelable(getResources().getString(R.string.movies));
+            if (moviesData != null) Loadgrid(moviesData.getResults());
+        }*/
     }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // setRetainInstance(true);
+    }
+
+    SharedPreferences sharedPreferences;
+    String previous_selected_category;
 
     @Nullable
     @Override
@@ -88,9 +102,18 @@ public class GridMainFragment extends Fragment implements Callbackinterface, Ser
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         progressDialog = new ProgressDialog(getContext());
         mTwopane = getContext().getResources().getBoolean(R.bool.mTwoBane);
-        getdata();
-        return view;
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(contextApp);
+        previous_selected_category = sharedPreferences.getString(getString(R.string.pref_unit_key),
+                getString(R.string.pref_units_popular));
+        //if (savedInstanceState == null && getArguments().getParcelable(getResources().getString(R.string.movies))==null)
+        if (getArguments().getParcelable(getResources().getString(R.string.movies)) == null || !selectedCategory.equals(previous_selected_category)) {
+            getdata();
+        } else {
+            moviesData = getArguments().getParcelable(getResources().getString(R.string.movies));
+            Loadgrid(moviesData.getResults());
 
+        }
+        return view;
     }
 
     private int numberOfColumns() {
@@ -116,17 +139,41 @@ public class GridMainFragment extends Fragment implements Callbackinterface, Ser
 
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
     public void getdata(/*final LocalDbHelper localDbHelper*/) {
        /* if (progressDialog != null)
             progressDialog.show();*/
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        String selected_category = sharedPreferences.getString(getString(R.string.pref_unit_key),
-                getString(R.string.pref_units_popular));
-        if (!selected_category.equals(getString(R.string.pref_units_favourited))) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(contextApp);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        switch (selectedCategory) {
+
+            case "popular":
+                editor.putString(getString(R.string.pref_unit_key), getString(R.string.pref_units_popular));
+                break;
+            case "top_rated":
+                editor.putString(getString(R.string.pref_unit_key), getString(R.string.pref_units_top_rated));
+
+                break;
+            case "favourite":
+                editor.putString(getString(R.string.pref_unit_key), getString(R.string.pref_units_favourited));
+                //current_category = getString(R.string.pref_units_favourited);
+                break;
+        }
+        editor.apply();
+        if (!selectedCategory.equals(getString(R.string.pref_units_favourited))) {
 
             RestClient.ApiService apiService = RestClient.getClient(getContext()).
                     create(RestClient.ApiService.class);
-            apiService.getMovies(selected_category, BuildConfig.API_KEY).enqueue(new Callback<MoviesData>() {
+            apiService.getMovies(selectedCategory, BuildConfig.API_KEY).enqueue(new Callback<MoviesData>() {
                 @Override
                 public void onResponse(Call<MoviesData> call, Response<MoviesData> response) {
                     moviesData = response.body();
@@ -159,52 +206,6 @@ public class GridMainFragment extends Fragment implements Callbackinterface, Ser
         intent.putParcelableArrayListExtra("movies", movies);
         // intent.putExtra("dd", GridMainFragment.this);
         getActivity().startService(intent);
-    }
-
-    public void insertTodatabase(final List<Movie> moviesDatas) {
-        Handler handler = new Handler();
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                int i = 0;
-
-                do {
-                    Movie movie = moviesDatas.get(i);
-                    Cursor cursor = getActivity().getContentResolver().query(Dbcotract.TableInfo.CONTENT_URI,
-                            new String[]{Dbcotract.TableInfo.Id}, Dbcotract.TableInfo.Id + "=?", new String[]{moviesDatas.get(i).getId().toString()}, Dbcotract.TableInfo.Id);
-
-                    if (cursor == null || cursor.getCount() <= 0) {
-                        ContentValues contentValues = new ContentValues();
-                        contentValues.put(Dbcotract.TableInfo.Id, movie.getId());
-                        contentValues.put(Dbcotract.TableInfo.PosterPath, movie.getPosterPath());
-                        contentValues.put(Dbcotract.TableInfo.Adult, movie.getAdult());
-                        contentValues.put(Dbcotract.TableInfo.Favourite, "0");
-                        contentValues.put(Dbcotract.TableInfo.OriginalLanguage, movie.getOriginalLanguage());
-                        contentValues.put(Dbcotract.TableInfo.ReleaseDate, movie.getReleaseDate());
-                        contentValues.put(Dbcotract.TableInfo.OriginalTitle, movie.getOriginalTitle());
-                        contentValues.put(Dbcotract.TableInfo.Video, movie.getVideo());
-                        contentValues.put(Dbcotract.TableInfo.OverView, movie.getOverview());
-                        contentValues.put(Dbcotract.TableInfo.Popularity, movie.getPopularity());
-                        contentValues.put(Dbcotract.TableInfo.VoteAverage, movie.getVoteAverage());
-                        contentValues.put(Dbcotract.TableInfo.VoteCount, movie.getVoteCount());
-                        Uri uri = getActivity().getContentResolver().insert(Dbcotract.TableInfo.CONTENT_URI, contentValues);
-                        if (uri != null) {
-                            Log.d("insert uri:", "" + uri.toString());
-                        }
-                    }
-                    i++;
-                    if (cursor != null)
-                        cursor.close();
-
-
-                } while (i < moviesDatas.size());
-
-
-            }
-        };
-        handler.post(runnable);
-
-
     }
 
     public void loadFavouriteMovies() {

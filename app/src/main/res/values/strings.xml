@@ -8,6 +8,7 @@
     <string name="movie">Selected Movie</string>
     <string name="movieDetails">Movie Details</string>
     <string name="movies">Movies</string>
+    <string name="selected_category">selected_category</string>
     <string name="favourit">Favourite</string>
     <string name="unfavourit">UnFavourite</string>
     <string name="year">2015</string>
