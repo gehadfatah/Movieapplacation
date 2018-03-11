@@ -86,7 +86,7 @@ public class GridMainFragment extends Fragment implements Callbackinterface, Ser
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // setRetainInstance(true);
+        setRetainInstance(true);
     }
 
     SharedPreferences sharedPreferences;
@@ -197,7 +197,6 @@ public class GridMainFragment extends Fragment implements Callbackinterface, Ser
         } else {
             loadFavouriteMovies();
             // startServiceMovie();
-
         }
     }
 
@@ -219,7 +218,6 @@ public class GridMainFragment extends Fragment implements Callbackinterface, Ser
                     movies = new ArrayList<>();
                     do {
                         Movie movie = new Movie();
-
                         movie.setId(cursor.getInt(0));
                         movie.setOriginalTitle(cursor.getString(1));
                         movie.setOriginalLanguage(cursor.getString(2));
@@ -232,12 +230,11 @@ public class GridMainFragment extends Fragment implements Callbackinterface, Ser
                         movie.setAdult(cursor.getString(9));
                         movie.setOverview(cursor.getString(10));
                         movie.setReleaseDate(cursor.getString(11));
-
                         movies.add(movie);
-
                     } while (cursor.moveToNext());
                     cursor.close();
                     //servicecallback.loadUi(movies);
+                    moviesData.setResults(movies);
                     Loadgrid(movies);
 
                 }

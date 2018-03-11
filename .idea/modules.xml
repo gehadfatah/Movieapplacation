@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/MovieApplacation.iml" filepath="$PROJECT_DIR$/MovieApplacation.iml" />
+      <module fileurl="file://C:\Users\godaa\Downloads\Movieapplacation-master\MovieApplacation.iml" filepath="C:\Users\godaa\Downloads\Movieapplacation-master\MovieApplacation.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Movieapplacation-master.iml" filepath="$PROJECT_DIR$/Movieapplacation-master.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/greendaogenerator/greendaogenerator.iml" filepath="$PROJECT_DIR$/greendaogenerator/greendaogenerator.iml" />
     </modules>

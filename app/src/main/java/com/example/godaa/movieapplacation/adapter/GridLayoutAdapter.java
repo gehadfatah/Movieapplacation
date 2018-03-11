@@ -1,7 +1,6 @@
 package com.example.godaa.movieapplacation.adapter;
 
 import android.content.Context;
-import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,7 +19,7 @@ import it.sephiroth.android.library.picasso.Picasso;
 /**
  * Created by godaa on 29/04/2017.
  */
-public class GridLayoutAdapter extends  RecyclerView.Adapter<GridLayoutAdapter.ViewHolder> {
+public class GridLayoutAdapter extends RecyclerView.Adapter<GridLayoutAdapter.ViewHolder> {
 
     List<Movie> movies;
     Context context;
@@ -33,19 +32,19 @@ public class GridLayoutAdapter extends  RecyclerView.Adapter<GridLayoutAdapter.V
         return (new ViewHolder(view));
     }
 
-    public GridLayoutAdapter(List<Movie> movies, Context context,Callbackinterface callbackinterface) {
+    public GridLayoutAdapter(List<Movie> movies, Context context, Callbackinterface callbackinterface) {
         Log.i("gridlayoutadapter", " im here");
-        this.movies=movies;
-        this.context=context;//for mainactivity
-        this.callbackinterface=callbackinterface;//for callbackinteface in gridmainfragment not in mainactivity
+        this.movies = movies;
+        this.context = context;//for mainactivity
+        this.callbackinterface = callbackinterface;//for callbackinteface in gridmainfragment not in mainactivity
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         final Movie movie = movies.get(position);
-        String image_url = context.getResources().getString(R.string.image_url)+
+        String image_url = context.getResources().getString(R.string.image_url) +
                 movie.getPosterPath();
-        Log.i("gridlayoutadapter", " onBindViewHolder here and imageurl ia "+image_url);
+        Log.i("gridlayoutadapter", " onBindViewHolder here and imageurl ia " + image_url);
 
         Picasso.with(context)
                 .load(image_url)
